@@ -1,0 +1,57 @@
+// This testbench is used to compare with the LDO with buffer compensation. 
+This testbench has run step response on input, settling time. 
+// Generated on: Dec 19 21:49:56 2025
+// Design library name: EE4312
+// Design cell name: SimpleLDO
+// Design view name: schematic
+simulator lang=spectre
+global 0 vdd!
+parameters Ibias
+include "/home/minlei/Desktop/EE4312/tsmc018.scs"
+
+// Library name: EE4312
+// Cell name: EA2
+// View name: schematic
+subckt EA2 \+ \- out
+    M3 (net4 net4 vdd! vdd!) cmosp w=4u l=500n m=6
+    M4 (net5 net4 vdd! vdd!) cmosp w=4u l=500n m=6
+    M5 (out net5 vdd! vdd!) cmosp w=4u l=500n m=24
+    M8 (net2 net2 0 0) cmosn w=4u l=500n m=2
+    M2 (net5 \+ net3 0) cmosn w=4u l=500n m=2
+    M6 (out net2 0 0) cmosn w=4u l=500n m=8
+    M7 (net3 net2 0 0) cmosn w=4u l=500n m=4
+    M1 (net4 \- net3 0) cmosn w=4u l=500n m=2
+    I0 (vdd! net2) isource dc=Ibias type=dc
+    R0 (net5 net018) resistor r=740
+    C0 (net018 out) capacitor c=330p
+ends EA2
+// End of subcircuit definition.
+
+// Library name: EE4312
+// Cell name: SimpleLDO
+// View name: schematic
+I0 (net3 net013 net8) EA2
+M0 (out net8 vdd! vdd!) cmosp w=800u l=350.00n
+V1 (net013 0) vsource dc=800m type=dc
+R1 (net05 0) resistor r=100K
+R0 (out net05) resistor r=50K
+IPRB0 (net3 net05) iprobe
+C0 (out 0) capacitor c=1u
+V0 (vdd! 0) vsource dc=1.8 type=pulse val0=1.8 val1=1.8 period=100u \
+        width=50u
+simulatorOptions options reltol=1e-3 vabstol=1e-6 iabstol=1e-12 temp=27 \
+    tnom=27 scalem=1.0 scale=1.0 gmin=1e-12 rforce=1 maxnotes=5 maxwarns=5 \
+    digits=5 cols=80 pivrel=1e-3 sensfile="../psf/sens.output" \
+    checklimitdest=psf 
+dcOp dc write="spectre.dc" maxiters=150 maxsteps=10000 annotate=status
+dcOpInfo info what=oppoint where=rawfile
+dc dc dev=V0 param=dc start=1.2 stop=100 lin=1000 oppoint=rawfile \
+    maxiters=150 maxsteps=10000 annotate=status
+modelParameter info what=models where=rawfile
+element info what=inst where=rawfile
+outputParameter info what=output where=rawfile
+designParamVals info what=parameters where=rawfile
+primitives info what=primitives where=rawfile
+subckts info what=subckts where=rawfile
+save out 
+saveOptions options save=allpub

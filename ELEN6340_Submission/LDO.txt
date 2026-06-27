@@ -1,0 +1,71 @@
+// This testbench runs test on the LDO with buffer compensation. DC operating point, quiescent current, 
+//temperature and bias current variation, PSRR are run in this testbench.
+// Generated on: Dec 19 21:45:01 2025
+// Design library name: EE4312
+// Design cell name: NewLDO
+// Design view name: schematic
+simulator lang=spectre
+global 0 vdd!
+parameters Ibias=10u
+include "/home/minlei/Desktop/EE4312/tsmc018.scs"
+
+// Library name: EE4312
+// Cell name: EA2
+// View name: schematic
+subckt EA2 \+ \- out
+    M3 (net4 net4 vdd! vdd!) cmosp w=4u l=500n m=6
+    M4 (net5 net4 vdd! vdd!) cmosp w=4u l=500n m=6
+    M5 (out net5 vdd! vdd!) cmosp w=4u l=500n m=24
+    M8 (net2 net2 0 0) cmosn w=4u l=500n m=2
+    M2 (net5 \+ net3 0) cmosn w=4u l=500n m=2
+    M6 (out net2 0 0) cmosn w=4u l=500n m=8
+    M7 (net3 net2 0 0) cmosn w=4u l=500n m=4
+    M1 (net4 \- net3 0) cmosn w=4u l=500n m=2
+    I0 (vdd! net2) isource dc=Ibias type=dc
+    R0 (net5 net018) resistor r=740
+    C0 (net018 out) capacitor c=330p
+ends EA2
+// End of subcircuit definition.
+
+// Library name: EE4312
+// Cell name: EA_BUFFER
+// View name: schematic
+subckt EA_BUFFER in out
+    V2 (net9 0) vsource dc=800.0m type=dc
+    IB2 (net7 0) isource dc=2*Ibias type=dc
+    IB1 (vdd! out) isource dc=2*Ibias type=dc
+    I18 (vdd! net010) isource dc=5u type=dc
+    M4 (out net010 vdd! vdd!) cmosp w=20u l=2u m=1
+    M1 (net7 in out out) cmosp w=2u l=200n m=1
+    M3 (net010 net9 net7 0) cmosn w=10u l=2u m=1
+    M2 (out net7 0 0) cmosn w=10u l=2u m=1
+ends EA_BUFFER
+// End of subcircuit definition.
+
+// Library name: EE4312
+// Cell name: NewLDO
+// View name: schematic
+I15 (net4 net3 net11) EA2
+I1 (net11 net8) EA_BUFFER
+V4 (vdd! 0) vsource dc=1.8 mag=1 type=dc
+V0 (net3 0) vsource dc=800.0m type=dc
+M0 (out net8 vdd! vdd!) cmosp w=1.6m l=350n
+R1 (net01 0) resistor r=100K
+R0 (out net01) resistor r=50K
+IPRB0 (net4 net01) iprobe
+C0 (out 0) capacitor c=1p
+simulatorOptions options reltol=1e-3 vabstol=1e-6 iabstol=1e-12 temp=27 \
+    tnom=27 scalem=1.0 scale=1.0 gmin=1e-12 rforce=1 maxnotes=5 maxwarns=5 \
+    digits=5 cols=80 pivrel=1e-3 sensfile="../psf/sens.output" \
+    checklimitdest=psf 
+tran tran stop=100u write="spectre.ic" writefinal="spectre.fc" \
+    annotate=status maxiters=5 
+finalTimeOP info what=oppoint where=rawfile
+modelParameter info what=models where=rawfile
+element info what=inst where=rawfile
+outputParameter info what=output where=rawfile
+designParamVals info what=parameters where=rawfile
+primitives info what=primitives where=rawfile
+subckts info what=subckts where=rawfile
+save out 
+saveOptions options save=allpub
