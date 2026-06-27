@@ -38,9 +38,9 @@ Layout style:
 - Figures and captions are centered; captions are italicized with plain HTML.
 -->
 
-# A More Comprehensive Analog LDO Design and Simulation
+# 1.2 V Low-Dropout Linear Regulator in 0.18 µm CMOS
 
-Yi-Hsiang Wei, Zijian Shang, Yuxiao Ma, and Chenxi Shen  
+Yi-Hsiang Wei,Zijian Shang, Yuxiao Ma, and Chenxi Shen  
 Department of Electrical Engineering, Columbia University  
 ELEN E6340 Analog Integrated Circuits, Spring 2026
 
